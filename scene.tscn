@@ -465,12 +465,11 @@ emission_energy_multiplier = 2.5
 material = SubResource("CrashButtonMaterial")
 size = Vector3(2.6, 0.5, 1.5)
 
+[sub_resource type="ViewportTexture" id="CrashViewportTexture"]
+viewport_path = NodePath("LabelSurfaceCrashRepro/CrashViewport")
+
 [sub_resource type="BoxShape3D" id="CrashButtonShape"]
 size = Vector3(2.6, 0.5, 1.5)
-
-[sub_resource type="ViewportTexture" id="CrashViewportTexture"]
-resource_local_to_scene = true
-viewport_path = NodePath("LabelSurfaceCrashRepro/CrashViewport")
 
 [sub_resource type="StandardMaterial3D" id="DeadlockPedestalMaterial"]
 albedo_color = Color(0.08, 0.035, 0.005, 1)
@@ -750,12 +749,14 @@ mesh = SubResource("CoinPortalDepthMesh")
 
 [node name="PortalDirectionalLight" type="DirectionalLight3D" parent="CoinRainDemo/CoinPortalWorld" unique_id=806279567]
 transform = Transform3D(0.8480481, 0.41758206, -0.32625088, 0, 0.6156615, 0.7880107, 0.52991927, -0.668271, 0.5221106, 0, 0, 0)
+visible = false
 light_color = Color(1, 0.72, 0.36, 1)
 light_energy = 2.5
 shadow_enabled = true
 
 [node name="PortalFillLight" type="OmniLight3D" parent="CoinRainDemo/CoinPortalWorld" unique_id=1594775442]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+visible = false
 light_color = Color(1, 0.78, 0.48, 1)
 light_energy = 4.0
 omni_range = 8.0
@@ -1097,6 +1098,89 @@ color = Color(1, 0.7, 0.18, 1)
 color_enabled = true
 strength = 1.35
 
+[node name="LabelAtlasSwizzleTest" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.5, -9.8)
+
+[node name="Red" type="Label3D" parent="LabelAtlasSwizzleTest"]
+position = Vector3(-6, 0.8, 0)
+pixel_size = 0.004
+modulate = Color(1, 0.08, 0.08, 1)
+text = "RED"
+font_size = 72
+outline_size = 8
+
+[node name="Orange" type="Label3D" parent="LabelAtlasSwizzleTest"]
+position = Vector3(-3, 0.8, 0)
+pixel_size = 0.004
+modulate = Color(1, 0.42, 0.04, 1)
+text = "ORANGE"
+font_size = 72
+outline_size = 8
+
+[node name="Yellow" type="Label3D" parent="LabelAtlasSwizzleTest"]
+position = Vector3(0, 0.8, 0)
+pixel_size = 0.004
+modulate = Color(1, 0.9, 0.04, 1)
+text = "YELLOW"
+font_size = 72
+outline_size = 8
+
+[node name="Green" type="Label3D" parent="LabelAtlasSwizzleTest"]
+position = Vector3(3, 0.8, 0)
+pixel_size = 0.004
+modulate = Color(0.08, 1, 0.2, 1)
+text = "GREEN"
+font_size = 72
+outline_size = 8
+
+[node name="Blue" type="Label3D" parent="LabelAtlasSwizzleTest"]
+position = Vector3(6, 0.8, 0)
+pixel_size = 0.004
+modulate = Color(0.08, 0.4, 1, 1)
+text = "BLUE"
+font_size = 72
+outline_size = 8
+
+[node name="Indigo" type="Label3D" parent="LabelAtlasSwizzleTest"]
+position = Vector3(-6, -0.8, 0)
+pixel_size = 0.004
+modulate = Color(0.294, 0, 0.51, 1)
+text = "INDIGO"
+font_size = 72
+outline_size = 8
+
+[node name="Violet" type="Label3D" parent="LabelAtlasSwizzleTest"]
+position = Vector3(-3, -0.8, 0)
+pixel_size = 0.004
+modulate = Color(0.58, 0, 0.83, 1)
+text = "VIOLET"
+font_size = 72
+outline_size = 8
+
+[node name="White" type="Label3D" parent="LabelAtlasSwizzleTest"]
+position = Vector3(0, -0.8, 0)
+pixel_size = 0.004
+text = "WHITE"
+font_size = 72
+outline_size = 8
+
+[node name="Black" type="Label3D" parent="LabelAtlasSwizzleTest"]
+position = Vector3(3, -0.8, 0)
+pixel_size = 0.004
+modulate = Color(0, 0, 0, 1)
+outline_modulate = Color(1, 1, 1, 1)
+text = "BLACK"
+font_size = 72
+outline_size = 8
+
+[node name="Grey" type="Label3D" parent="LabelAtlasSwizzleTest"]
+position = Vector3(6, -0.8, 0)
+pixel_size = 0.004
+modulate = Color(0.5, 0.5, 0.5, 1)
+text = "GREY"
+font_size = 72
+outline_size = 8
+
 [node name="RealityVolumeCamera3D" type="RealityVolumeCamera3D" parent="." unique_id=87807298]
 size = 22.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
@@ -1123,7 +1207,7 @@ collision_mask = 3
 [node name="Visual" type="MeshInstance3D" parent="LabelSurfaceCrashRepro/CrashButton" unique_id=1169616822]
 mesh = SubResource("CrashButtonMesh")
 
-[node name="CapturePreview" type="Sprite3D" parent="LabelSurfaceCrashRepro/CrashButton"]
+[node name="CapturePreview" type="Sprite3D" parent="LabelSurfaceCrashRepro/CrashButton" unique_id=1874890777]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.26, 0)
 pixel_size = 0.0012
 texture = SubResource("CrashViewportTexture")
