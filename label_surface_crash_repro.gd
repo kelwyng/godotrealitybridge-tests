@@ -38,7 +38,8 @@ func _run_reproduction() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	var iteration := 0
-	while true:
+	var stop_time := Time.get_ticks_msec() + 1000
+	while Time.get_ticks_msec() < stop_time:
 		crash_label.font_size = STRESS_FONT_SIZES[iteration % STRESS_FONT_SIZES.size()]
 		crash_label.outline_size = STRESS_OUTLINE_SIZES[iteration % STRESS_OUTLINE_SIZES.size()]
 		crash_label.text = LARGE_TEXT
@@ -46,6 +47,8 @@ func _run_reproduction() -> void:
 		crash_label.text = SMALL_TEXT
 		await _capture_frame()
 		iteration += 1
+	warning_label.text = "SURVIVED 1-SECOND SURFACE-RACE TEST"
+	triggered = false
 
 
 func _capture_frame() -> void:
