@@ -22,15 +22,8 @@ directory into the path above.
 
 Open `project.godot` with the custom Godot macOS editor.
 
-To export, build, install, and launch:
-
-```sh
-./build-and-push.sh simulator
-./build-and-push.sh headset
-```
-
-Set `GODOT_REALITYKIT_EDITOR` when the custom editor is not in the adjacent
-`godotrealitybridge` workspace.
+Use Godot's `visionOS` export preset to generate an Xcode project, then select
+the simulator or headset destination and build it in Xcode.
 
 ## Destructive regression tests
 

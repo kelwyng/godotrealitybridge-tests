@@ -410,6 +410,21 @@ size = Vector3(1.3, 1.3, 1.3)
 [sub_resource type="BoxShape3D" id="DragBlockShape"]
 size = Vector3(1.3, 1.3, 1.3)
 
+[sub_resource type="StandardMaterial3D" id="DragBlockPinkMaterial"]
+albedo_color = Color(1, 0.08, 0.5, 1)
+metallic = 0.32
+roughness = 0.24
+
+[sub_resource type="StandardMaterial3D" id="DragBlockGreenMaterial"]
+albedo_color = Color(0.04, 0.8, 0.32, 1)
+metallic = 0.32
+roughness = 0.24
+
+[sub_resource type="StandardMaterial3D" id="DragBlockGoldMaterial"]
+albedo_color = Color(1, 0.55, 0.04, 1)
+metallic = 0.45
+roughness = 0.2
+
 [sub_resource type="SphereMesh" id="DragSphereMesh"]
 radius = 0.72
 height = 1.44
@@ -428,21 +443,6 @@ rings = 1
 
 [sub_resource type="ConvexPolygonShape3D" id="DragPyramidShape"]
 points = PackedVector3Array(0, 0.8, 0, -0.82, -0.8, -0.82, 0.82, -0.8, -0.82, 0.82, -0.8, 0.82, -0.82, -0.8, 0.82)
-
-[sub_resource type="StandardMaterial3D" id="DragBlockPinkMaterial"]
-albedo_color = Color(1, 0.08, 0.5, 1)
-metallic = 0.32
-roughness = 0.24
-
-[sub_resource type="StandardMaterial3D" id="DragBlockGreenMaterial"]
-albedo_color = Color(0.04, 0.8, 0.32, 1)
-metallic = 0.32
-roughness = 0.24
-
-[sub_resource type="StandardMaterial3D" id="DragBlockGoldMaterial"]
-albedo_color = Color(1, 0.55, 0.04, 1)
-metallic = 0.45
-roughness = 0.2
 
 [sub_resource type="StandardMaterial3D" id="CrashPedestalMaterial"]
 albedo_color = Color(0.06, 0.01, 0.012, 1)
@@ -799,7 +799,7 @@ outline_size = 8
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.920855, 0.0014781952)
 pixel_size = 0.002
 text = "You currently should only see 48 coins"
-font_size = 42
+font_size = 71
 outline_size = 8
 
 [node name="PhysicsBounds" type="Node3D" parent="CoinRainDemo" unique_id=1030277748]
@@ -929,92 +929,88 @@ color = Color(1, 0.7, 0.18, 1)
 color_enabled = true
 strength = 1.35
 
-[node name="BlueSphere" type="RigidBody3D" parent="PhysicsDragBlocks"]
-position = Vector3(-7.2, 2.1, -5.5)
+[node name="BlueSphere" type="RigidBody3D" parent="PhysicsDragBlocks" unique_id=514715844]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.2, 2.1, -5.5)
 collision_layer = 3
 collision_mask = 3
-mass = 1.0
 physics_material_override = SubResource("DragBlockPhysicsMaterial")
 continuous_cd = true
 script = ExtResource("8_drag_block")
 
-[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/BlueSphere"]
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/BlueSphere" unique_id=1768389862]
 material_override = SubResource("DragBlockBlueMaterial")
 mesh = SubResource("DragSphereMesh")
 
-[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/BlueSphere"]
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/BlueSphere" unique_id=77583989]
 shape = SubResource("DragSphereShape")
 
-[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/BlueSphere"]
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/BlueSphere" unique_id=804570303]
 color = Color(0.2, 0.65, 1, 1)
 color_enabled = true
 strength = 1.35
 
-[node name="PinkSphere" type="RigidBody3D" parent="PhysicsDragBlocks"]
-position = Vector3(-5.2, 2.1, -5.5)
+[node name="PinkSphere" type="RigidBody3D" parent="PhysicsDragBlocks" unique_id=1917959187]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.2, 2.1, -5.5)
 collision_layer = 3
 collision_mask = 3
-mass = 1.0
 physics_material_override = SubResource("DragBlockPhysicsMaterial")
 continuous_cd = true
 script = ExtResource("8_drag_block")
 
-[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/PinkSphere"]
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/PinkSphere" unique_id=821746530]
 material_override = SubResource("DragBlockPinkMaterial")
 mesh = SubResource("DragSphereMesh")
 
-[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/PinkSphere"]
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/PinkSphere" unique_id=2121909742]
 shape = SubResource("DragSphereShape")
 
-[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/PinkSphere"]
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/PinkSphere" unique_id=1847802869]
 color = Color(1, 0.2, 0.65, 1)
 color_enabled = true
 strength = 1.35
 
-[node name="GreenSphere" type="RigidBody3D" parent="PhysicsDragBlocks"]
-position = Vector3(5.2, 2.1, -5.5)
+[node name="GreenSphere" type="RigidBody3D" parent="PhysicsDragBlocks" unique_id=940441396]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.2, 2.1, -5.5)
 collision_layer = 3
 collision_mask = 3
-mass = 1.0
 physics_material_override = SubResource("DragBlockPhysicsMaterial")
 continuous_cd = true
 script = ExtResource("8_drag_block")
 
-[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GreenSphere"]
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GreenSphere" unique_id=1454513476]
 material_override = SubResource("DragBlockGreenMaterial")
 mesh = SubResource("DragSphereMesh")
 
-[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GreenSphere"]
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GreenSphere" unique_id=1276194898]
 shape = SubResource("DragSphereShape")
 
-[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GreenSphere"]
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GreenSphere" unique_id=324689159]
 color = Color(0.2, 1, 0.45, 1)
 color_enabled = true
 strength = 1.35
 
-[node name="GoldSphere" type="RigidBody3D" parent="PhysicsDragBlocks"]
-position = Vector3(7.2, 2.1, -5.5)
+[node name="GoldSphere" type="RigidBody3D" parent="PhysicsDragBlocks" unique_id=1425044541]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.2, 2.1, -5.5)
 collision_layer = 3
 collision_mask = 3
-mass = 1.0
 physics_material_override = SubResource("DragBlockPhysicsMaterial")
 continuous_cd = true
 script = ExtResource("8_drag_block")
 
-[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GoldSphere"]
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GoldSphere" unique_id=54662711]
 material_override = SubResource("DragBlockGoldMaterial")
 mesh = SubResource("DragSphereMesh")
 
-[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GoldSphere"]
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GoldSphere" unique_id=278925215]
 shape = SubResource("DragSphereShape")
 
-[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GoldSphere"]
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GoldSphere" unique_id=1396142533]
 color = Color(1, 0.7, 0.18, 1)
 color_enabled = true
 strength = 1.35
 
-[node name="BluePyramid" type="RigidBody3D" parent="PhysicsDragBlocks"]
-position = Vector3(-6, 2.2, -8)
+[node name="BluePyramid" type="RigidBody3D" parent="PhysicsDragBlocks" unique_id=129094093]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2.2, -8)
 collision_layer = 3
 collision_mask = 3
 mass = 1.3
@@ -1022,20 +1018,20 @@ physics_material_override = SubResource("DragBlockPhysicsMaterial")
 continuous_cd = true
 script = ExtResource("8_drag_block")
 
-[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/BluePyramid"]
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/BluePyramid" unique_id=2089176088]
 material_override = SubResource("DragBlockBlueMaterial")
 mesh = SubResource("DragPyramidMesh")
 
-[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/BluePyramid"]
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/BluePyramid" unique_id=1152067620]
 shape = SubResource("DragPyramidShape")
 
-[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/BluePyramid"]
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/BluePyramid" unique_id=731307315]
 color = Color(0.2, 0.65, 1, 1)
 color_enabled = true
 strength = 1.35
 
-[node name="PinkPyramid" type="RigidBody3D" parent="PhysicsDragBlocks"]
-position = Vector3(-2, 2.2, -8)
+[node name="PinkPyramid" type="RigidBody3D" parent="PhysicsDragBlocks" unique_id=2058945956]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2.2, -8)
 collision_layer = 3
 collision_mask = 3
 mass = 1.3
@@ -1043,20 +1039,20 @@ physics_material_override = SubResource("DragBlockPhysicsMaterial")
 continuous_cd = true
 script = ExtResource("8_drag_block")
 
-[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/PinkPyramid"]
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/PinkPyramid" unique_id=1372007541]
 material_override = SubResource("DragBlockPinkMaterial")
 mesh = SubResource("DragPyramidMesh")
 
-[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/PinkPyramid"]
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/PinkPyramid" unique_id=1242249532]
 shape = SubResource("DragPyramidShape")
 
-[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/PinkPyramid"]
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/PinkPyramid" unique_id=203162468]
 color = Color(1, 0.2, 0.65, 1)
 color_enabled = true
 strength = 1.35
 
-[node name="GreenPyramid" type="RigidBody3D" parent="PhysicsDragBlocks"]
-position = Vector3(2, 2.2, -8)
+[node name="GreenPyramid" type="RigidBody3D" parent="PhysicsDragBlocks" unique_id=359227478]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2.2, -8)
 collision_layer = 3
 collision_mask = 3
 mass = 1.3
@@ -1064,20 +1060,20 @@ physics_material_override = SubResource("DragBlockPhysicsMaterial")
 continuous_cd = true
 script = ExtResource("8_drag_block")
 
-[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GreenPyramid"]
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GreenPyramid" unique_id=2090421739]
 material_override = SubResource("DragBlockGreenMaterial")
 mesh = SubResource("DragPyramidMesh")
 
-[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GreenPyramid"]
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GreenPyramid" unique_id=1631878283]
 shape = SubResource("DragPyramidShape")
 
-[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GreenPyramid"]
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GreenPyramid" unique_id=154527066]
 color = Color(0.2, 1, 0.45, 1)
 color_enabled = true
 strength = 1.35
 
-[node name="GoldPyramid" type="RigidBody3D" parent="PhysicsDragBlocks"]
-position = Vector3(6, 2.2, -8)
+[node name="GoldPyramid" type="RigidBody3D" parent="PhysicsDragBlocks" unique_id=1086409703]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2.2, -8)
 collision_layer = 3
 collision_mask = 3
 mass = 1.3
@@ -1085,14 +1081,14 @@ physics_material_override = SubResource("DragBlockPhysicsMaterial")
 continuous_cd = true
 script = ExtResource("8_drag_block")
 
-[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GoldPyramid"]
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GoldPyramid" unique_id=420820943]
 material_override = SubResource("DragBlockGoldMaterial")
 mesh = SubResource("DragPyramidMesh")
 
-[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GoldPyramid"]
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GoldPyramid" unique_id=2072439006]
 shape = SubResource("DragPyramidShape")
 
-[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GoldPyramid"]
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GoldPyramid" unique_id=20301807]
 color = Color(1, 0.7, 0.18, 1)
 color_enabled = true
 strength = 1.35

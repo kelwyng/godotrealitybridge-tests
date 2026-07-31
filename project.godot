@@ -11,14 +11,14 @@ config_version=5
 [application]
 
 config/name="godot-realitykit-demo"
-run/main_scene="uid://chohuj15mscxi"
+run/main_scene="res://scene.tscn"
 run/main_loop_type="RealitySceneTree"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
 
 [editor_plugins]
 
-enabled=["res://addons/GodotRealityKit/plugin.cfg", "GodotRealityKit"]
+enabled=["res://addons/GodotRealityKit/plugin.cfg"]
 
 [input]
 
