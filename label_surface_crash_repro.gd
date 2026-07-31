@@ -6,6 +6,8 @@ const LARGE_TEXT := """ABCDEFGHIJKLMNOPQRSTUVWXYZ
 АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ
 日本語 中文 한국어 العربية हिन्दी
 0123456789 !@#$%^&*()[]{}"""
+const STRESS_FONT_SIZES := [257, 389, 521, 769]
+const STRESS_OUTLINE_SIZES := [8, 24, 48, 72]
 
 @onready var crash_label: Label3D = $CrashViewport/CrashLabel
 @onready var warning_label: Label3D = $Warning
@@ -34,7 +36,12 @@ func _on_crash_button_input(
 func _run_reproduction() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
-	for iteration in range(20):
-		crash_label.text = LARGE_TEXT if iteration % 2 == 0 else SMALL_TEXT
+	var iteration := 0
+	while true:
+		crash_label.font_size = STRESS_FONT_SIZES[iteration % STRESS_FONT_SIZES.size()]
+		crash_label.outline_size = STRESS_OUTLINE_SIZES[iteration % STRESS_OUTLINE_SIZES.size()]
+		crash_label.text = LARGE_TEXT
 		await get_tree().process_frame
-	warning_label.text = "SURVIVED — SURFACE GUARD IS WORKING"
+		crash_label.text = SMALL_TEXT
+		await get_tree().process_frame
+		iteration += 1

@@ -1130,7 +1130,7 @@ strength = 1.6
 [node name="Warning" type="Label3D" parent="LabelSurfaceCrashRepro" unique_id=174595038]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 0)
 pixel_size = 0.0025
-text = "WARNING: Will crash the bridge immediately
+text = "WARNING: STRESSES UNTIL BRIDGE CRASHES
 LABEL3D SURFACE-COUNT RACE"
 font_size = 54
 outline_size = 10
