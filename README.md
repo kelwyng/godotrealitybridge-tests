@@ -4,7 +4,8 @@ Standalone Godot project for manually exercising GodotRealityKit behavior on
 macOS, the visionOS Simulator, and Apple Vision Pro.
 
 The scene includes portal crossing, interaction and physics objects, dynamic
-MultiMesh coin counts, and targeted Label3D regression reproducers.
+[MultiMesh](https://docs.godotengine.org/en/stable/classes/class_multimesh.html)
+coin counts, and targeted Label3D regression reproducers.
 
 ## GodotRealityKit dependency
 
