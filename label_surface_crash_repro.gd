@@ -9,7 +9,8 @@ const LARGE_TEXT := """ABCDEFGHIJKLMNOPQRSTUVWXYZ
 const STRESS_FONT_SIZES := [257, 389, 521, 769]
 const STRESS_OUTLINE_SIZES := [8, 24, 48, 72]
 
-@onready var crash_label: Label3D = $CrashViewport/CrashLabel
+@onready var crash_label: Label3D = $CrashLabel
+@onready var crash_viewport: SubViewport = $CrashViewport
 @onready var warning_label: Label3D = $Warning
 
 var triggered := false
@@ -41,7 +42,16 @@ func _run_reproduction() -> void:
 		crash_label.font_size = STRESS_FONT_SIZES[iteration % STRESS_FONT_SIZES.size()]
 		crash_label.outline_size = STRESS_OUTLINE_SIZES[iteration % STRESS_OUTLINE_SIZES.size()]
 		crash_label.text = LARGE_TEXT
-		await get_tree().process_frame
+		await _capture_frame()
 		crash_label.text = SMALL_TEXT
-		await get_tree().process_frame
+		await _capture_frame()
 		iteration += 1
+
+
+func _capture_frame() -> void:
+	crash_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+	await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	var capture_image := crash_viewport.get_texture().get_image()
+	if capture_image == null or capture_image.is_empty():
+		warning_label.text = "CAPTURE TEXTURE READBACK FAILED"
