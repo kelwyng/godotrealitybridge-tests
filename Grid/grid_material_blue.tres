@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cef5xvfydibe0"]
+
+[ext_resource type="Shader" uid="uid://dyck4av02p4fq" path="res://Grid/grid_shader_blue.tres" id="1_5lpew"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_5lpew")

@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cvhviawy6b5d5"]
+
+[ext_resource type="Shader" uid="uid://45hgqtia85wj" path="res://Grid/grid_shader_red.tres" id="1_dr224"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_dr224")

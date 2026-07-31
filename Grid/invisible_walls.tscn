@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://1ktjtko3rkuq"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_nxogm"]
+
+[node name="InvisibleWalls" type="Node3D" unique_id=1225219258]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=970416283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 8, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1062047651]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_nxogm")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="." unique_id=2034943717]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 8, -11.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2" unique_id=64892730]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_nxogm")
+
+[node name="StaticBody3D3" type="StaticBody3D" parent="." unique_id=608468433]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -10.5, 8, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3" unique_id=1337533626]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_nxogm")
+
+[node name="StaticBody3D4" type="StaticBody3D" parent="." unique_id=1914038986]
+transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, 0, 8, 10.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D4" unique_id=1154056789]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_nxogm")

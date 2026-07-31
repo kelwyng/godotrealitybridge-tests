@@ -1,0 +1,1236 @@
+[gd_scene format=3 uid="uid://chohuj15mscxi"]
+
+[ext_resource type="PackedScene" uid="uid://1ktjtko3rkuq" path="res://Grid/invisible_walls.tscn" id="2_nxogm"]
+[ext_resource type="Material" uid="uid://cef5xvfydibe0" path="res://Grid/grid_material_blue.tres" id="3_3253y"]
+[ext_resource type="Script" uid="uid://beo61o2dwop0x" path="res://interactable_cylinder.gd" id="5_interactable"]
+[ext_resource type="Script" uid="uid://cja0ws7pm5rx4" path="res://stopwatch_sign.gd" id="6_stopwatch"]
+[ext_resource type="Script" uid="uid://b1sj6u05ncoh3" path="res://pooled_coin_rain.gd" id="7_coin_rain"]
+[ext_resource type="Script" uid="uid://cbjtwbxcpcis8" path="res://draggable_physics_block.gd" id="8_drag_block"]
+[ext_resource type="Script" uid="uid://cabdyw0adrmaj" path="res://mac_desktop_input.gd" id="9_mac_input"]
+[ext_resource type="Script" uid="uid://d0c7y7n1lb6s7" path="res://label_surface_crash_repro.gd" id="10_label_crash"]
+[ext_resource type="Script" uid="uid://dutljnuw7cuxu" path="res://font_atlas_deadlock_repro.gd" id="11_font_deadlock"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_u3cyc"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_m7jmp"]
+sky_material = SubResource("ProceduralSkyMaterial_u3cyc")
+
+[sub_resource type="Environment" id="Environment_y2354"]
+background_mode = 2
+sky = SubResource("Sky_m7jmp")
+ambient_light_source = 3
+ambient_light_color = Color(0.72, 0.78, 0.9, 1)
+ambient_light_energy = 1.5
+glow_enabled = true
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_u3cyc"]
+data = PackedVector3Array(-11, -1, 11, -11, -1, -11, -11, 1, -11, 11, -1, -11, -11, -1, -11, -11, -1, 11, -11, 1, -11, -11, -1, -11, 11, -1, -11, -11, 1, -11, -11, 1, 11, -11, -1, 11, -11, -1, 11, -11, 1, 11, 11, 1, 11, 11, 1, 11, -11, 1, 11, -11, 1, -11, -11, -1, 11, 11, -1, 11, 11, -1, -11, 11, 1, 11, 11, -1, 11, -11, -1, 11, 11, -1, -11, 11, -1, 11, 11, 1, 11, 11, -1, -11, 11, 1, -11, -11, 1, -11, -11, 1, -11, 11, 1, -11, 11, 1, 11, 11, 1, 11, 11, 1, -11, 11, -1, -11)
+
+[sub_resource type="StandardMaterial3D" id="PortalWorldMaterial"]
+albedo_color = Color(0.05490196, 0.7294118, 0.12156863, 1)
+metallic = 0.2
+roughness = 0.75
+
+[sub_resource type="BoxMesh" id="PortalBackdropMesh"]
+material = SubResource("PortalWorldMaterial")
+size = Vector3(2.8, 2.5, 0.08)
+
+[sub_resource type="BoxMesh" id="PortalFloorMesh"]
+material = SubResource("PortalWorldMaterial")
+size = Vector3(3, 0.08, 1.7625732)
+
+[sub_resource type="StandardMaterial3D" id="CrossingObjectMaterial"]
+albedo_color = Color(1, 0.18, 0.035, 1)
+metallic = 0.35
+roughness = 0.2
+emission_enabled = true
+emission = Color(1, 0.025, 0.005, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="CrossingObjectMesh"]
+material = SubResource("CrossingObjectMaterial")
+size = Vector3(0.55, 0.55, 0.95)
+
+[sub_resource type="StandardMaterial3D" id="PortalSurfaceMaterial"]
+transparency = 1
+albedo_color = Color(0.01, 0.02, 0.08, 0.08)
+roughness = 0.9
+
+[sub_resource type="QuadMesh" id="PortalMesh"]
+material = SubResource("PortalSurfaceMaterial")
+size = Vector2(2.3, 2)
+
+[sub_resource type="PhysicsMaterial" id="DragBlockPhysicsMaterial"]
+friction = 0.72
+bounce = 0.18
+
+[sub_resource type="BoxShape3D" id="PortalCollisionShape"]
+size = Vector3(2.3, 2, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="PortalFrameMaterial"]
+albedo_color = Color(0.06, 0.42, 1, 1)
+metallic = 0.55
+roughness = 0.18
+emission_enabled = true
+emission = Color(0.01, 0.18, 1, 1)
+emission_energy_multiplier = 2.5
+
+[sub_resource type="BoxMesh" id="VerticalFrameMesh"]
+material = SubResource("PortalFrameMaterial")
+size = Vector3(0.12, 2.2, 0.14)
+
+[sub_resource type="BoxMesh" id="HorizontalFrameMesh"]
+material = SubResource("PortalFrameMaterial")
+size = Vector3(2.52, 0.12, 0.14)
+
+[sub_resource type="Animation" id="PortalResetAnimation"]
+resource_name = "RESET"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PortalWorld/CrossingObject:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, -1.4)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PortalWorld/CrossingObject:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="PortalCrossingAnimation"]
+resource_name = "portal_crossing"
+length = 4.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PortalWorld/CrossingObject:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2, 3, 4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, -1.4), Vector3(0, 0, 0), Vector3(0, 0, 1.4), Vector3(0, 0, 0), Vector3(0, 0, -1.4)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PortalWorld/CrossingObject:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1, 2, 3, 4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(14, 90, 0), Vector3(0, 180, 0), Vector3(-14, 270, 0), Vector3(0, 360, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="PortalAnimationLibrary"]
+_data = {
+&"RESET": SubResource("PortalResetAnimation"),
+&"portal_crossing": SubResource("PortalCrossingAnimation")
+}
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u3cyc"]
+albedo_color = Color(0.6026011, 0.5107239, 1, 1)
+metallic = 0.2
+roughness = 0.75
+
+[sub_resource type="BoxMesh" id="BoxMesh_m7jmp"]
+material = SubResource("StandardMaterial3D_u3cyc")
+size = Vector3(2.4961426, 2.5, 0.08)
+
+[sub_resource type="StandardMaterial3D" id="HighlightCylinderMaterial"]
+albedo_color = Color(0.05, 0.45, 1, 1)
+metallic = 0.35
+roughness = 0.2
+
+[sub_resource type="CylinderMesh" id="HighlightCylinderMesh"]
+material = SubResource("HighlightCylinderMaterial")
+top_radius = 1.2
+bottom_radius = 1.2
+height = 2.7
+radial_segments = 32
+
+[sub_resource type="CapsuleShape3D" id="InteractableCylinderShape"]
+radius = 1.3
+height = 3.0
+
+[sub_resource type="Animation" id="InteractableResetAnimation"]
+resource_name = "RESET"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="InteractableBounceAnimation"]
+resource_name = "bounce"
+length = 0.65
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.48, 0.65),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0.7, 0), Vector3(0, 0.12, 0), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.12, 0.3, 0.5, 0.65),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector3(1, 1, 1), Vector3(0.9, 1.12, 0.9), Vector3(1, 1, 1), Vector3(1.08, 0.9, 1.08), Vector3(1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="InteractableAnimationLibrary"]
+_data = {
+&"RESET": SubResource("InteractableResetAnimation"),
+&"bounce": SubResource("InteractableBounceAnimation")
+}
+
+[sub_resource type="StandardMaterial3D" id="SpotlightCylinderMaterial"]
+albedo_color = Color(1, 0.32, 0.04, 1)
+metallic = 0.35
+roughness = 0.2
+
+[sub_resource type="CylinderMesh" id="SpotlightCylinderMesh"]
+material = SubResource("SpotlightCylinderMaterial")
+top_radius = 1.2
+bottom_radius = 1.2
+height = 2.7
+radial_segments = 32
+
+[sub_resource type="StandardMaterial3D" id="StopwatchRimMaterial"]
+albedo_color = Color(0.95, 0.52, 0.04, 1)
+metallic = 0.65
+roughness = 0.18
+
+[sub_resource type="CylinderMesh" id="StopwatchRimMesh"]
+material = SubResource("StopwatchRimMaterial")
+top_radius = 1.7
+bottom_radius = 1.7
+height = 0.18
+
+[sub_resource type="StandardMaterial3D" id="StopwatchFaceMaterial"]
+albedo_color = Color(0.015, 0.025, 0.055, 1)
+metallic = 0.2
+roughness = 0.3
+
+[sub_resource type="CylinderMesh" id="StopwatchFaceMesh"]
+material = SubResource("StopwatchFaceMaterial")
+top_radius = 1.52
+bottom_radius = 1.52
+height = 0.2
+
+[sub_resource type="BoxMesh" id="StopwatchStemMesh"]
+material = SubResource("StopwatchRimMaterial")
+size = Vector3(0.34, 0.55, 0.24)
+
+[sub_resource type="CylinderMesh" id="StopwatchButtonMesh"]
+material = SubResource("StopwatchRimMaterial")
+top_radius = 0.34
+bottom_radius = 0.34
+height = 0.28
+radial_segments = 32
+
+[sub_resource type="BoxShape3D" id="StopwatchButtonHitShape"]
+size = Vector3(1.1, 0.8, 1.1)
+
+[sub_resource type="StandardMaterial3D" id="BucketMaterial"]
+albedo_color = Color(0.04, 0.34, 0.9, 1)
+metallic = 0.45
+roughness = 0.24
+
+[sub_resource type="CylinderMesh" id="BucketMesh"]
+material = SubResource("BucketMaterial")
+bottom_radius = 1.06
+height = 1.55
+radial_segments = 32
+
+[sub_resource type="StandardMaterial3D" id="BucketMouthMaterial"]
+albedo_color = Color(0.008, 0.012, 0.025, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="BucketMouthMesh"]
+material = SubResource("BucketMouthMaterial")
+top_radius = 0.62
+bottom_radius = 0.62
+height = 0.08
+radial_segments = 32
+
+[sub_resource type="StandardMaterial3D" id="CoinMaterial"]
+albedo_color = Color(1, 0.58, 0.06, 1)
+metallic = 0.75
+roughness = 0.2
+
+[sub_resource type="CylinderMesh" id="CoinMesh"]
+material = SubResource("CoinMaterial")
+top_radius = 0.35
+bottom_radius = 0.35
+height = 0.12
+radial_segments = 12
+rings = 1
+
+[sub_resource type="MultiMesh" id="CoinPoolMultiMesh"]
+transform_format = 1
+custom_aabb = AABB(-2, -5, -2, 4, 14, 4)
+instance_count = 48
+visible_instance_count = 48
+mesh = SubResource("CoinMesh")
+buffer = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[sub_resource type="ProceduralSkyMaterial" id="CoinPortalSkyMaterial"]
+sky_top_color = Color(0.95, 0.65, 0.25, 1)
+sky_horizon_color = Color(1, 0.88, 0.58, 1)
+ground_bottom_color = Color(0.2, 0.04, 0.28, 1)
+ground_horizon_color = Color(0.75, 0.28, 0.42, 1)
+
+[sub_resource type="Sky" id="CoinPortalSky"]
+sky_material = SubResource("CoinPortalSkyMaterial")
+
+[sub_resource type="Environment" id="CoinPortalEnvironment"]
+background_mode = 2
+background_energy_multiplier = 4.0
+sky = SubResource("CoinPortalSky")
+ambient_light_source = 3
+ambient_light_color = Color(1, 0.9, 0.7, 1)
+ambient_light_energy = 4.32
+reflected_light_source = 2
+
+[sub_resource type="MultiMesh" id="PortalCoinPoolMultiMesh"]
+transform_format = 1
+custom_aabb = AABB(-2, -5, -2, 4, 14, 4)
+instance_count = 48
+visible_instance_count = 48
+mesh = SubResource("CoinMesh")
+buffer = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="CoinPortalDepthMaterial"]
+albedo_color = Color(0.18, 0.04, 0.32, 1)
+metallic = 0.05
+roughness = 0.65
+emission_enabled = true
+emission = Color(0.05, 0.008, 0.1, 1)
+emission_energy_multiplier = 1.25
+
+[sub_resource type="BoxMesh" id="CoinPortalDepthMesh"]
+material = SubResource("CoinPortalDepthMaterial")
+size = Vector3(3.5, 0.12, 3.5)
+
+[sub_resource type="StandardMaterial3D" id="CoinPortalMaterial"]
+transparency = 1
+albedo_color = Color(0.18, 0.03, 0.42, 0.18)
+metallic = 0.2
+roughness = 0.8
+
+[sub_resource type="PlaneMesh" id="CoinPortalMesh"]
+material = SubResource("CoinPortalMaterial")
+size = Vector2(3.5, 3.5)
+
+[sub_resource type="BoxShape3D" id="CoinPortalCollisionShape"]
+size = Vector3(3.5, 0.12, 3.5)
+
+[sub_resource type="StandardMaterial3D" id="CoinPortalFrameMaterial"]
+albedo_color = Color(0.65, 0.08, 1, 1)
+metallic = 0.6
+roughness = 0.18
+emission_enabled = true
+emission = Color(0.2, 0.01, 0.65, 1)
+emission_energy_multiplier = 2.2
+
+[sub_resource type="BoxMesh" id="CoinPortalLongFrameMesh"]
+material = SubResource("CoinPortalFrameMaterial")
+size = Vector3(3.8, 0.14, 0.18)
+
+[sub_resource type="BoxMesh" id="CoinPortalSideFrameMesh"]
+material = SubResource("CoinPortalFrameMaterial")
+size = Vector3(0.18, 0.14, 3.8)
+
+[sub_resource type="BoxShape3D" id="CoinPortalSideWallShape"]
+size = Vector3(0.14, 12, 3.5)
+
+[sub_resource type="BoxShape3D" id="CoinPortalEndWallShape"]
+size = Vector3(3.5, 12, 0.14)
+
+[sub_resource type="StandardMaterial3D" id="DragBlockBlueMaterial"]
+albedo_color = Color(0.04, 0.42, 1, 1)
+metallic = 0.32
+roughness = 0.24
+
+[sub_resource type="BoxMesh" id="DragBlockMesh"]
+size = Vector3(1.3, 1.3, 1.3)
+
+[sub_resource type="BoxShape3D" id="DragBlockShape"]
+size = Vector3(1.3, 1.3, 1.3)
+
+[sub_resource type="SphereMesh" id="DragSphereMesh"]
+radius = 0.72
+height = 1.44
+radial_segments = 24
+rings = 12
+
+[sub_resource type="SphereShape3D" id="DragSphereShape"]
+radius = 0.72
+
+[sub_resource type="CylinderMesh" id="DragPyramidMesh"]
+top_radius = 0.0
+bottom_radius = 0.82
+height = 1.6
+radial_segments = 4
+rings = 1
+
+[sub_resource type="ConvexPolygonShape3D" id="DragPyramidShape"]
+points = PackedVector3Array(0, 0.8, 0, -0.82, -0.8, -0.82, 0.82, -0.8, -0.82, 0.82, -0.8, 0.82, -0.82, -0.8, 0.82)
+
+[sub_resource type="StandardMaterial3D" id="DragBlockPinkMaterial"]
+albedo_color = Color(1, 0.08, 0.5, 1)
+metallic = 0.32
+roughness = 0.24
+
+[sub_resource type="StandardMaterial3D" id="DragBlockGreenMaterial"]
+albedo_color = Color(0.04, 0.8, 0.32, 1)
+metallic = 0.32
+roughness = 0.24
+
+[sub_resource type="StandardMaterial3D" id="DragBlockGoldMaterial"]
+albedo_color = Color(1, 0.55, 0.04, 1)
+metallic = 0.45
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="CrashPedestalMaterial"]
+albedo_color = Color(0.06, 0.01, 0.012, 1)
+metallic = 0.45
+roughness = 0.38
+
+[sub_resource type="BoxMesh" id="CrashPedestalMesh"]
+material = SubResource("CrashPedestalMaterial")
+size = Vector3(3.2, 0.5, 2.1)
+
+[sub_resource type="StandardMaterial3D" id="CrashButtonMaterial"]
+albedo_color = Color(0.9, 0.01, 0.015, 1)
+metallic = 0.15
+roughness = 0.28
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+emission_energy_multiplier = 2.5
+
+[sub_resource type="BoxMesh" id="CrashButtonMesh"]
+material = SubResource("CrashButtonMaterial")
+size = Vector3(2.6, 0.5, 1.5)
+
+[sub_resource type="BoxShape3D" id="CrashButtonShape"]
+size = Vector3(2.6, 0.5, 1.5)
+
+[sub_resource type="StandardMaterial3D" id="DeadlockPedestalMaterial"]
+albedo_color = Color(0.08, 0.035, 0.005, 1)
+metallic = 0.45
+roughness = 0.38
+
+[sub_resource type="BoxMesh" id="DeadlockPedestalMesh"]
+material = SubResource("DeadlockPedestalMaterial")
+size = Vector3(3.2, 0.5, 2.1)
+
+[sub_resource type="StandardMaterial3D" id="DeadlockButtonMaterial"]
+albedo_color = Color(1, 0.48, 0.01, 1)
+metallic = 0.2
+roughness = 0.25
+emission_enabled = true
+emission = Color(1, 0.18, 0, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="DeadlockButtonMesh"]
+material = SubResource("DeadlockButtonMaterial")
+size = Vector3(2.6, 0.5, 1.5)
+
+[sub_resource type="CylinderMesh" id="HeartbeatDialMesh"]
+material = SubResource("DeadlockPedestalMaterial")
+top_radius = 0.75
+bottom_radius = 0.75
+height = 0.12
+radial_segments = 32
+
+[sub_resource type="StandardMaterial3D" id="HeartbeatMaterial"]
+albedo_color = Color(0, 0.9, 1, 1)
+emission_enabled = true
+emission = Color(0, 0.7, 1, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="BoxMesh" id="HeartbeatHandMesh"]
+material = SubResource("HeartbeatMaterial")
+size = Vector3(0.12, 0.68, 0.12)
+
+[node name="Node3D" type="Node3D" unique_id=1109226382]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1309955740]
+environment = SubResource("Environment_y2354")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=200653375]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 4.875717, 15.794445, -6.8226633)
+shadow_enabled = true
+
+[node name="RealityKitDirectionalLightShadow3D" type="RealityKitDirectionalLightShadow3D" parent="DirectionalLight3D" unique_id=1612260082]
+z_far = 27.58
+orthographic_scale = 29.5
+
+[node name="InvisibleWalls" parent="." unique_id=1225219258 instance=ExtResource("2_nxogm")]
+visible = false
+
+[node name="Floor" type="CSGBox3D" parent="." unique_id=903267030]
+material_override = ExtResource("3_3253y")
+size = Vector3(22, 2, 22)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor" unique_id=2117101051]
+
+[node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" unique_id=432055651]
+shape = SubResource("ConcavePolygonShape3D_u3cyc")
+
+[node name="PortalDemo" type="Node3D" parent="." unique_id=1719111641]
+transform = Transform3D(-8.742278e-08, 0, 2, 0, 2, 0, -2, 0, -8.742278e-08, -10.760994, 3.1929822, 4.5)
+
+[node name="PortalWorld" type="Node3D" parent="PortalDemo" unique_id=943812490]
+
+[node name="PortalImageBasedLight" type="RealityImageBasedLight3D" parent="PortalDemo/PortalWorld" unique_id=615396190]
+environment = SubResource("Environment_y2354")
+
+[node name="Backdrop" type="MeshInstance3D" parent="PortalDemo/PortalWorld" unique_id=348525055]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.8)
+mesh = SubResource("PortalBackdropMesh")
+
+[node name="Floor" type="MeshInstance3D" parent="PortalDemo/PortalWorld" unique_id=1182149192]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.02, -1.1187134)
+mesh = SubResource("PortalFloorMesh")
+
+[node name="CrossingObject" type="MeshInstance3D" parent="PortalDemo/PortalWorld" unique_id=1710108983]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.4)
+mesh = SubResource("CrossingObjectMesh")
+
+[node name="PortalCrossing" type="RealityPortalCrossing3D" parent="PortalDemo/PortalWorld/CrossingObject" unique_id=2085598788]
+
+[node name="Label" type="Label3D" parent="PortalDemo/PortalWorld/CrossingObject" unique_id=448054593]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.3054633, 0, 0.058931828)
+pixel_size = 0.002
+text = "CROSSING OBJECT"
+font_size = 48
+outline_size = 8
+
+[node name="Portal" type="RealityPortalMeshInstance3D" parent="PortalDemo" unique_id=173948702]
+target_node = NodePath("../PortalWorld")
+clipping_plane_enabled = true
+crossing_plane_enabled = true
+mesh = SubResource("PortalMesh")
+
+[node name="PhysicsSurface" type="StaticBody3D" parent="PortalDemo/Portal" unique_id=1777111495]
+collision_mask = 3
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PortalDemo/Portal/PhysicsSurface" unique_id=938310381]
+shape = SubResource("PortalCollisionShape")
+
+[node name="LeftFrame" type="MeshInstance3D" parent="PortalDemo" unique_id=1218865292]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.21, 0, 0)
+mesh = SubResource("VerticalFrameMesh")
+
+[node name="RightFrame" type="MeshInstance3D" parent="PortalDemo" unique_id=1997004596]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.21, 0, 0)
+mesh = SubResource("VerticalFrameMesh")
+
+[node name="TopFrame" type="MeshInstance3D" parent="PortalDemo" unique_id=69630035]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.06, 0)
+mesh = SubResource("HorizontalFrameMesh")
+
+[node name="BottomFrame" type="MeshInstance3D" parent="PortalDemo" unique_id=2004690615]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.06, 0)
+mesh = SubResource("HorizontalFrameMesh")
+
+[node name="Label" type="Label3D" parent="PortalDemo" unique_id=105995836]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.34, 0)
+pixel_size = 0.002
+text = "Portal Crossing labels flicker"
+font_size = 64
+outline_size = 8
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="PortalDemo" unique_id=1300842471]
+libraries/ = SubResource("PortalAnimationLibrary")
+autoplay = &"portal_crossing"
+
+[node name="Backdrop" type="MeshInstance3D" parent="PortalDemo" unique_id=964891275]
+transform = Transform3D(1, 0, 0, 0, 0.8782226, 0, 0, 0, 0.12994212, 0.060082912, 0, -0.05745125)
+mesh = SubResource("BoxMesh_m7jmp")
+
+[node name="Interactables" type="Node3D" parent="." unique_id=390200082]
+
+[node name="HighlightCylinder" type="StaticBody3D" parent="Interactables" unique_id=1310796084]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 2.36, 4.5)
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("5_interactable")
+
+[node name="Visual" type="Node3D" parent="Interactables/HighlightCylinder" unique_id=995832046]
+
+[node name="Cylinder" type="MeshInstance3D" parent="Interactables/HighlightCylinder/Visual" unique_id=1090530212]
+mesh = SubResource("HighlightCylinderMesh")
+
+[node name="Label" type="Label3D" parent="Interactables/HighlightCylinder/Visual" unique_id=275102434]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8546712, 0)
+pixel_size = 0.0018
+text = "Highlight style interactable
+"
+font_size = 152
+outline_size = 6
+
+[node name="Collision" type="CollisionShape3D" parent="Interactables/HighlightCylinder" unique_id=50013535]
+shape = SubResource("InteractableCylinderShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="Interactables/HighlightCylinder" unique_id=857133066]
+color = Color(0.2, 0.65, 1, 1)
+color_enabled = true
+strength = 1.4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Interactables/HighlightCylinder" unique_id=2048548937]
+libraries/ = SubResource("InteractableAnimationLibrary")
+
+[node name="SpotlightCylinder" type="StaticBody3D" parent="Interactables" unique_id=1520569981]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 2.36, 4.5)
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("5_interactable")
+
+[node name="Visual" type="Node3D" parent="Interactables/SpotlightCylinder" unique_id=1346855764]
+
+[node name="Cylinder" type="MeshInstance3D" parent="Interactables/SpotlightCylinder/Visual" unique_id=850144734]
+mesh = SubResource("SpotlightCylinderMesh")
+
+[node name="Label" type="Label3D" parent="Interactables/SpotlightCylinder/Visual" unique_id=9909157]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8546712, 0)
+pixel_size = 0.0018
+text = "Spotlight style interactable"
+font_size = 152
+outline_size = 6
+
+[node name="Collision" type="CollisionShape3D" parent="Interactables/SpotlightCylinder" unique_id=1791021704]
+shape = SubResource("InteractableCylinderShape")
+
+[node name="GazeSpotlight" type="RealityHoverEffect3D" parent="Interactables/SpotlightCylinder" unique_id=1973827970]
+strength = 1.4
+style = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Interactables/SpotlightCylinder" unique_id=1539180548]
+libraries/ = SubResource("InteractableAnimationLibrary")
+
+[node name="StopwatchSign" type="Node3D" parent="." unique_id=437319239]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.1, 4.5)
+script = ExtResource("6_stopwatch")
+
+[node name="Rim" type="MeshInstance3D" parent="StopwatchSign" unique_id=1821145377]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, -1, 0, 1, 7.54979e-08, 0, 0, 0)
+mesh = SubResource("StopwatchRimMesh")
+
+[node name="Face" type="MeshInstance3D" parent="StopwatchSign" unique_id=1219317644]
+transform = Transform3D(1, 0, 0, 0, 7.54979e-08, -1, 0, 1, 7.54979e-08, 0, 0, 0.11)
+mesh = SubResource("StopwatchFaceMesh")
+
+[node name="Stem" type="MeshInstance3D" parent="StopwatchSign" unique_id=1266580963]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.82, 0)
+mesh = SubResource("StopwatchStemMesh")
+
+[node name="TopButton" type="StaticBody3D" parent="StopwatchSign" unique_id=1398745002]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.12, 0)
+collision_layer = 2
+collision_mask = 3
+
+[node name="Visual" type="MeshInstance3D" parent="StopwatchSign/TopButton" unique_id=776033485]
+mesh = SubResource("StopwatchButtonMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="StopwatchSign/TopButton" unique_id=1143141628]
+shape = SubResource("StopwatchButtonHitShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="StopwatchSign/TopButton" unique_id=224664796]
+color = Color(1, 0.62, 0.08, 1)
+color_enabled = true
+strength = 1.5
+
+[node name="Title" type="Label3D" parent="StopwatchSign" unique_id=962247334]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, 0.24)
+pixel_size = 0.0025
+text = "Fast update label"
+font_size = 48
+outline_size = 8
+
+[node name="Display" type="Label3D" parent="StopwatchSign" unique_id=1202749493]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.11151409, 0.23999977)
+pixel_size = 0.004
+text = "0:00.000"
+font_size = 127
+outline_size = 10
+
+[node name="CoinRainDemo" type="Node3D" parent="." unique_id=47905340]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 4)
+script = ExtResource("7_coin_rain")
+
+[node name="Bucket" type="MeshInstance3D" parent="CoinRainDemo" unique_id=1066644044]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
+mesh = SubResource("BucketMesh")
+
+[node name="Mouth" type="MeshInstance3D" parent="CoinRainDemo/Bucket" unique_id=150648982]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.81, 0)
+mesh = SubResource("BucketMouthMesh")
+
+[node name="Label" type="Label3D" parent="CoinRainDemo/Bucket" unique_id=1354498814]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12, 0)
+pixel_size = 0.0025
+text = "Multimesh visible count not correct"
+font_size = 52
+outline_size = 8
+
+[node name="CoinVisuals" type="MultiMeshInstance3D" parent="CoinRainDemo" unique_id=237202904]
+multimesh = SubResource("CoinPoolMultiMesh")
+
+[node name="CoinPortalWorld" type="Node3D" parent="CoinRainDemo" unique_id=2029361973]
+
+[node name="PortalImageBasedLight" type="RealityImageBasedLight3D" parent="CoinRainDemo/CoinPortalWorld" unique_id=964453245]
+environment = SubResource("CoinPortalEnvironment")
+
+[node name="PortalCoinVisuals" type="MultiMeshInstance3D" parent="CoinRainDemo/CoinPortalWorld" unique_id=1280491179]
+multimesh = SubResource("PortalCoinPoolMultiMesh")
+
+[node name="DepthFloor" type="MeshInstance3D" parent="CoinRainDemo/CoinPortalWorld" unique_id=128065036]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.8, 0)
+mesh = SubResource("CoinPortalDepthMesh")
+
+[node name="PortalDirectionalLight" type="DirectionalLight3D" parent="CoinRainDemo/CoinPortalWorld" unique_id=806279567]
+transform = Transform3D(0.8480481, 0.41758206, -0.32625088, 0, 0.6156615, 0.7880107, 0.52991927, -0.668271, 0.5221106, 0, 0, 0)
+light_color = Color(1, 0.72, 0.36, 1)
+light_energy = 2.5
+shadow_enabled = true
+
+[node name="PortalFillLight" type="OmniLight3D" parent="CoinRainDemo/CoinPortalWorld" unique_id=1594775442]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+light_color = Color(1, 0.78, 0.48, 1)
+light_energy = 4.0
+omni_range = 8.0
+
+[node name="CoinPortal" type="RealityPortalMeshInstance3D" parent="CoinRainDemo" unique_id=1335927560]
+target_node = NodePath("../CoinPortalWorld")
+clipping_plane_enabled = true
+clipping_plane_normal = Vector3(0, 1, 0)
+crossing_plane_enabled = true
+crossing_plane_normal = Vector3(0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0)
+mesh = SubResource("CoinPortalMesh")
+
+[node name="PhysicsSurface" type="StaticBody3D" parent="CoinRainDemo/CoinPortal" unique_id=1224160770]
+collision_mask = 3
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CoinRainDemo/CoinPortal/PhysicsSurface" unique_id=313856425]
+shape = SubResource("CoinPortalCollisionShape")
+
+[node name="FrontFrame" type="MeshInstance3D" parent="CoinRainDemo" unique_id=1141563495]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58, 1.84)
+mesh = SubResource("CoinPortalLongFrameMesh")
+
+[node name="BackFrame" type="MeshInstance3D" parent="CoinRainDemo" unique_id=723407030]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.58, -1.84)
+mesh = SubResource("CoinPortalLongFrameMesh")
+
+[node name="LeftFrame" type="MeshInstance3D" parent="CoinRainDemo" unique_id=1493940841]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.84, 1.58, 0)
+mesh = SubResource("CoinPortalSideFrameMesh")
+
+[node name="RightFrame" type="MeshInstance3D" parent="CoinRainDemo" unique_id=279941923]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.84, 1.58, 0)
+mesh = SubResource("CoinPortalSideFrameMesh")
+
+[node name="PortalLabel" type="Label3D" parent="CoinRainDemo" unique_id=550123092]
+transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 1.78, 2.15)
+pixel_size = 0.0025
+text = "infinite pot of greed"
+font_size = 48
+outline_size = 8
+
+[node name="CountLabel" type="Label3D" parent="CoinRainDemo" unique_id=250906253]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.920855, 0.0014781952)
+pixel_size = 0.002
+text = "You currently should only see 48 coins"
+font_size = 42
+outline_size = 8
+
+[node name="PhysicsBounds" type="Node3D" parent="CoinRainDemo" unique_id=1030277748]
+
+[node name="LeftWall" type="StaticBody3D" parent="CoinRainDemo/PhysicsBounds" unique_id=457685474]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.68, 2, 0)
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CoinRainDemo/PhysicsBounds/LeftWall" unique_id=818694982]
+shape = SubResource("CoinPortalSideWallShape")
+
+[node name="RightWall" type="StaticBody3D" parent="CoinRainDemo/PhysicsBounds" unique_id=1582519764]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.68, 2, 0)
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CoinRainDemo/PhysicsBounds/RightWall" unique_id=1934449107]
+shape = SubResource("CoinPortalSideWallShape")
+
+[node name="FrontWall" type="StaticBody3D" parent="CoinRainDemo/PhysicsBounds" unique_id=1835062114]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 1.68)
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CoinRainDemo/PhysicsBounds/FrontWall" unique_id=450205118]
+shape = SubResource("CoinPortalEndWallShape")
+
+[node name="BackWall" type="StaticBody3D" parent="CoinRainDemo/PhysicsBounds" unique_id=756181771]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -1.68)
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CoinRainDemo/PhysicsBounds/BackWall" unique_id=1742309768]
+shape = SubResource("CoinPortalEndWallShape")
+
+[node name="PhysicsDragBlocks" type="Node3D" parent="." unique_id=924958458]
+
+[node name="Label" type="Label3D" parent="PhysicsDragBlocks" unique_id=944484199]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -5.5)
+pixel_size = 0.003
+text = "Physics Blocks (no issue just fun)"
+font_size = 64
+outline_size = 8
+
+[node name="BlueBlock" type="RigidBody3D" parent="PhysicsDragBlocks" unique_id=555890427]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 2.2, -5.5)
+collision_layer = 3
+collision_mask = 3
+mass = 1.2
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+continuous_cd = true
+script = ExtResource("8_drag_block")
+
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/BlueBlock" unique_id=1963349950]
+material_override = SubResource("DragBlockBlueMaterial")
+mesh = SubResource("DragBlockMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/BlueBlock" unique_id=1882342349]
+shape = SubResource("DragBlockShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/BlueBlock" unique_id=1195174860]
+color = Color(0.2, 0.65, 1, 1)
+color_enabled = true
+strength = 1.35
+
+[node name="PinkBlock" type="RigidBody3D" parent="PhysicsDragBlocks" unique_id=1057165814]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 2.2, -5.5)
+collision_layer = 3
+collision_mask = 3
+mass = 1.2
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+continuous_cd = true
+script = ExtResource("8_drag_block")
+
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/PinkBlock" unique_id=2018005237]
+material_override = SubResource("DragBlockPinkMaterial")
+mesh = SubResource("DragBlockMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/PinkBlock" unique_id=1780206593]
+shape = SubResource("DragBlockShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/PinkBlock" unique_id=158111636]
+color = Color(1, 0.2, 0.65, 1)
+color_enabled = true
+strength = 1.35
+
+[node name="GreenBlock" type="RigidBody3D" parent="PhysicsDragBlocks" unique_id=842091257]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 2.2, -5.5)
+collision_layer = 3
+collision_mask = 3
+mass = 1.2
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+continuous_cd = true
+script = ExtResource("8_drag_block")
+
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GreenBlock" unique_id=333914853]
+material_override = SubResource("DragBlockGreenMaterial")
+mesh = SubResource("DragBlockMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GreenBlock" unique_id=353522810]
+shape = SubResource("DragBlockShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GreenBlock" unique_id=1383830121]
+color = Color(0.2, 1, 0.45, 1)
+color_enabled = true
+strength = 1.35
+
+[node name="GoldBlock" type="RigidBody3D" parent="PhysicsDragBlocks" unique_id=119275725]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 2.2, -5.5)
+collision_layer = 3
+collision_mask = 3
+mass = 1.2
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+continuous_cd = true
+script = ExtResource("8_drag_block")
+
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GoldBlock" unique_id=1719948048]
+material_override = SubResource("DragBlockGoldMaterial")
+mesh = SubResource("DragBlockMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GoldBlock" unique_id=520605605]
+shape = SubResource("DragBlockShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GoldBlock" unique_id=1244900331]
+color = Color(1, 0.7, 0.18, 1)
+color_enabled = true
+strength = 1.35
+
+[node name="BlueSphere" type="RigidBody3D" parent="PhysicsDragBlocks"]
+position = Vector3(-7.2, 2.1, -5.5)
+collision_layer = 3
+collision_mask = 3
+mass = 1.0
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+continuous_cd = true
+script = ExtResource("8_drag_block")
+
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/BlueSphere"]
+material_override = SubResource("DragBlockBlueMaterial")
+mesh = SubResource("DragSphereMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/BlueSphere"]
+shape = SubResource("DragSphereShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/BlueSphere"]
+color = Color(0.2, 0.65, 1, 1)
+color_enabled = true
+strength = 1.35
+
+[node name="PinkSphere" type="RigidBody3D" parent="PhysicsDragBlocks"]
+position = Vector3(-5.2, 2.1, -5.5)
+collision_layer = 3
+collision_mask = 3
+mass = 1.0
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+continuous_cd = true
+script = ExtResource("8_drag_block")
+
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/PinkSphere"]
+material_override = SubResource("DragBlockPinkMaterial")
+mesh = SubResource("DragSphereMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/PinkSphere"]
+shape = SubResource("DragSphereShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/PinkSphere"]
+color = Color(1, 0.2, 0.65, 1)
+color_enabled = true
+strength = 1.35
+
+[node name="GreenSphere" type="RigidBody3D" parent="PhysicsDragBlocks"]
+position = Vector3(5.2, 2.1, -5.5)
+collision_layer = 3
+collision_mask = 3
+mass = 1.0
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+continuous_cd = true
+script = ExtResource("8_drag_block")
+
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GreenSphere"]
+material_override = SubResource("DragBlockGreenMaterial")
+mesh = SubResource("DragSphereMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GreenSphere"]
+shape = SubResource("DragSphereShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GreenSphere"]
+color = Color(0.2, 1, 0.45, 1)
+color_enabled = true
+strength = 1.35
+
+[node name="GoldSphere" type="RigidBody3D" parent="PhysicsDragBlocks"]
+position = Vector3(7.2, 2.1, -5.5)
+collision_layer = 3
+collision_mask = 3
+mass = 1.0
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+continuous_cd = true
+script = ExtResource("8_drag_block")
+
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GoldSphere"]
+material_override = SubResource("DragBlockGoldMaterial")
+mesh = SubResource("DragSphereMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GoldSphere"]
+shape = SubResource("DragSphereShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GoldSphere"]
+color = Color(1, 0.7, 0.18, 1)
+color_enabled = true
+strength = 1.35
+
+[node name="BluePyramid" type="RigidBody3D" parent="PhysicsDragBlocks"]
+position = Vector3(-6, 2.2, -8)
+collision_layer = 3
+collision_mask = 3
+mass = 1.3
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+continuous_cd = true
+script = ExtResource("8_drag_block")
+
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/BluePyramid"]
+material_override = SubResource("DragBlockBlueMaterial")
+mesh = SubResource("DragPyramidMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/BluePyramid"]
+shape = SubResource("DragPyramidShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/BluePyramid"]
+color = Color(0.2, 0.65, 1, 1)
+color_enabled = true
+strength = 1.35
+
+[node name="PinkPyramid" type="RigidBody3D" parent="PhysicsDragBlocks"]
+position = Vector3(-2, 2.2, -8)
+collision_layer = 3
+collision_mask = 3
+mass = 1.3
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+continuous_cd = true
+script = ExtResource("8_drag_block")
+
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/PinkPyramid"]
+material_override = SubResource("DragBlockPinkMaterial")
+mesh = SubResource("DragPyramidMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/PinkPyramid"]
+shape = SubResource("DragPyramidShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/PinkPyramid"]
+color = Color(1, 0.2, 0.65, 1)
+color_enabled = true
+strength = 1.35
+
+[node name="GreenPyramid" type="RigidBody3D" parent="PhysicsDragBlocks"]
+position = Vector3(2, 2.2, -8)
+collision_layer = 3
+collision_mask = 3
+mass = 1.3
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+continuous_cd = true
+script = ExtResource("8_drag_block")
+
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GreenPyramid"]
+material_override = SubResource("DragBlockGreenMaterial")
+mesh = SubResource("DragPyramidMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GreenPyramid"]
+shape = SubResource("DragPyramidShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GreenPyramid"]
+color = Color(0.2, 1, 0.45, 1)
+color_enabled = true
+strength = 1.35
+
+[node name="GoldPyramid" type="RigidBody3D" parent="PhysicsDragBlocks"]
+position = Vector3(6, 2.2, -8)
+collision_layer = 3
+collision_mask = 3
+mass = 1.3
+physics_material_override = SubResource("DragBlockPhysicsMaterial")
+continuous_cd = true
+script = ExtResource("8_drag_block")
+
+[node name="Mesh" type="MeshInstance3D" parent="PhysicsDragBlocks/GoldPyramid"]
+material_override = SubResource("DragBlockGoldMaterial")
+mesh = SubResource("DragPyramidMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="PhysicsDragBlocks/GoldPyramid"]
+shape = SubResource("DragPyramidShape")
+
+[node name="GazeHighlight" type="RealityHoverEffect3D" parent="PhysicsDragBlocks/GoldPyramid"]
+color = Color(1, 0.7, 0.18, 1)
+color_enabled = true
+strength = 1.35
+
+[node name="RealityVolumeCamera3D" type="RealityVolumeCamera3D" parent="." unique_id=87807298]
+size = 22.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+
+[node name="PreviewCamera" type="Camera3D" parent="RealityVolumeCamera3D" unique_id=775268426]
+transform = Transform3D(1, 0, 0, 0, 0.78684705, 0.6171481, 0, -0.6171481, 0.78684705, 0, 5.3223305, 16.195305)
+
+[node name="MacDesktopInput" type="Node" parent="." unique_id=1165815011]
+script = ExtResource("9_mac_input")
+
+[node name="LabelSurfaceCrashRepro" type="Node3D" parent="." unique_id=1360102149]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.776675, 0, 8.5146475)
+script = ExtResource("10_label_crash")
+
+[node name="Pedestal" type="MeshInstance3D" parent="LabelSurfaceCrashRepro" unique_id=375769475]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+mesh = SubResource("CrashPedestalMesh")
+
+[node name="CrashButton" type="StaticBody3D" parent="LabelSurfaceCrashRepro" unique_id=1886964197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
+collision_layer = 2
+collision_mask = 3
+
+[node name="Visual" type="MeshInstance3D" parent="LabelSurfaceCrashRepro/CrashButton" unique_id=1169616822]
+mesh = SubResource("CrashButtonMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabelSurfaceCrashRepro/CrashButton" unique_id=1045734599]
+shape = SubResource("CrashButtonShape")
+
+[node name="Hover" type="RealityHoverEffect3D" parent="LabelSurfaceCrashRepro/CrashButton" unique_id=1261060492]
+color = Color(1, 0.05, 0.05, 1)
+color_enabled = true
+strength = 1.6
+
+[node name="Warning" type="Label3D" parent="LabelSurfaceCrashRepro" unique_id=174595038]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 0)
+pixel_size = 0.0025
+text = "WARNING: Will crash the bridge immediately
+LABEL3D SURFACE-COUNT RACE"
+font_size = 54
+outline_size = 10
+
+[node name="CrashViewport" type="SubViewport" parent="LabelSurfaceCrashRepro" unique_id=572956121]
+render_target_update_mode = 4
+
+[node name="CrashCamera" type="Camera3D" parent="LabelSurfaceCrashRepro/CrashViewport" unique_id=376095172]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+cull_mask = 2
+current = true
+
+[node name="CrashLabel" type="Label3D" parent="LabelSurfaceCrashRepro/CrashViewport" unique_id=1117841756]
+layers = 2
+pixel_size = 0.002
+text = "A"
+font_size = 256
+outline_size = 16
+
+[node name="FontAtlasDeadlockRepro" type="Node3D" parent="." unique_id=1771966416]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.1540203, -9.536743e-07, 8.911602)
+script = ExtResource("11_font_deadlock")
+
+[node name="Pedestal" type="MeshInstance3D" parent="FontAtlasDeadlockRepro" unique_id=14451215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+mesh = SubResource("DeadlockPedestalMesh")
+
+[node name="TriggerButton" type="StaticBody3D" parent="FontAtlasDeadlockRepro" unique_id=833490463]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
+collision_layer = 2
+collision_mask = 3
+
+[node name="Visual" type="MeshInstance3D" parent="FontAtlasDeadlockRepro/TriggerButton" unique_id=2082235163]
+mesh = SubResource("DeadlockButtonMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FontAtlasDeadlockRepro/TriggerButton" unique_id=1925330928]
+shape = SubResource("CrashButtonShape")
+
+[node name="Hover" type="RealityHoverEffect3D" parent="FontAtlasDeadlockRepro/TriggerButton" unique_id=602101728]
+color = Color(1, 0.5, 0.05, 1)
+color_enabled = true
+strength = 1.6
+
+[node name="Status" type="Label3D" parent="FontAtlasDeadlockRepro" unique_id=53695451]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0027852058, 2.904173, 0.53950787)
+pixel_size = 0.0022
+text = "WARNING: will deadlock realitykit bridge
+FONT-ATLAS REGEN REPRO"
+font_size = 44
+outline_size = 8
+
+[node name="Heartbeat" type="Node3D" parent="FontAtlasDeadlockRepro" unique_id=1694597670]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.813559, -0.53593063)
+
+[node name="Dial" type="MeshInstance3D" parent="FontAtlasDeadlockRepro/Heartbeat" unique_id=1991416646]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+mesh = SubResource("HeartbeatDialMesh")
+
+[node name="HandPivot" type="Node3D" parent="FontAtlasDeadlockRepro/Heartbeat" unique_id=2113517625]
+
+[node name="Hand" type="MeshInstance3D" parent="FontAtlasDeadlockRepro/Heartbeat/HandPivot" unique_id=299834115]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, 0.08)
+mesh = SubResource("HeartbeatHandMesh")
+
+[node name="ReproViewport" type="SubViewport" parent="FontAtlasDeadlockRepro" unique_id=990134408]
+size = Vector2i(1024, 1024)
+render_target_update_mode = 4
+
+[node name="ReproCamera" type="Camera3D" parent="FontAtlasDeadlockRepro/ReproViewport" unique_id=37011942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 1000, 3)
+cull_mask = 4
+current = true
+
+[node name="TargetLabel" type="Label3D" parent="FontAtlasDeadlockRepro/ReproViewport" unique_id=1164742258]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 1000, 0)
+layers = 4
+pixel_size = 0.001
+text = "A"
+font_size = 16
+
+[connection signal="activated" from="Interactables/HighlightCylinder" to="StopwatchSign" method="_on_start_activated"]
+[connection signal="input_event" from="Interactables/HighlightCylinder" to="Interactables/HighlightCylinder" method="_on_input_event"]
+[connection signal="activated" from="Interactables/SpotlightCylinder" to="StopwatchSign" method="_on_stop_activated"]
+[connection signal="input_event" from="Interactables/SpotlightCylinder" to="Interactables/SpotlightCylinder" method="_on_input_event"]
+[connection signal="input_event" from="StopwatchSign/TopButton" to="StopwatchSign" method="_on_top_button_input"]
+[connection signal="input_event" from="PhysicsDragBlocks/BlueBlock" to="PhysicsDragBlocks/BlueBlock" method="_on_input_event"]
+[connection signal="input_event" from="PhysicsDragBlocks/PinkBlock" to="PhysicsDragBlocks/PinkBlock" method="_on_input_event"]
+[connection signal="input_event" from="PhysicsDragBlocks/GreenBlock" to="PhysicsDragBlocks/GreenBlock" method="_on_input_event"]
+[connection signal="input_event" from="PhysicsDragBlocks/GoldBlock" to="PhysicsDragBlocks/GoldBlock" method="_on_input_event"]
+[connection signal="input_event" from="PhysicsDragBlocks/BlueSphere" to="PhysicsDragBlocks/BlueSphere" method="_on_input_event"]
+[connection signal="input_event" from="PhysicsDragBlocks/PinkSphere" to="PhysicsDragBlocks/PinkSphere" method="_on_input_event"]
+[connection signal="input_event" from="PhysicsDragBlocks/GreenSphere" to="PhysicsDragBlocks/GreenSphere" method="_on_input_event"]
+[connection signal="input_event" from="PhysicsDragBlocks/GoldSphere" to="PhysicsDragBlocks/GoldSphere" method="_on_input_event"]
+[connection signal="input_event" from="PhysicsDragBlocks/BluePyramid" to="PhysicsDragBlocks/BluePyramid" method="_on_input_event"]
+[connection signal="input_event" from="PhysicsDragBlocks/PinkPyramid" to="PhysicsDragBlocks/PinkPyramid" method="_on_input_event"]
+[connection signal="input_event" from="PhysicsDragBlocks/GreenPyramid" to="PhysicsDragBlocks/GreenPyramid" method="_on_input_event"]
+[connection signal="input_event" from="PhysicsDragBlocks/GoldPyramid" to="PhysicsDragBlocks/GoldPyramid" method="_on_input_event"]
+[connection signal="input_event" from="LabelSurfaceCrashRepro/CrashButton" to="LabelSurfaceCrashRepro" method="_on_crash_button_input"]
+[connection signal="input_event" from="FontAtlasDeadlockRepro/TriggerButton" to="FontAtlasDeadlockRepro" method="_on_trigger_button_input"]
