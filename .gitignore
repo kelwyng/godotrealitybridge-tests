@@ -2,6 +2,6 @@
 .godot/
 .DS_Store
 /android/
-/addons/GodotRealityKit/
+/addons/GodotRealityKit
 /out/
 AGENTS.md

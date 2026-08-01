@@ -32,3 +32,12 @@ the simulator or headset destination and build it in Xcode.
   crash on an unpatched bridge.
 - The amber button attempts to reproduce the dynamic font-atlas deadlock. The
   cyan hand freezes when the SceneTree deadlocks.
+
+## Font atlas modes
+
+`font_atlas_modes.tscn` is the focused simulator rendering test. The orange
+labels use a default non-MSDF LA8 atlas and must receive the simulator swizzle.
+The blue labels use an MSDF system font and must remain on the existing MSDF
+path. The rainbow uses the bundled Noto Color Emoji font and must remain RGBA.
+Run this scene directly when validating Label3D atlas changes. The font is from
+Google's Noto Emoji project and its OFL 1.1 license is stored beside it.

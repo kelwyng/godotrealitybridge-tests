@@ -1,0 +1,72 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="FontFile" path="res://fonts/NotoColorEmoji.ttf" id="1_color_emoji"]
+
+[sub_resource type="SystemFont" id="SystemFont_la8"]
+font_names = PackedStringArray("Helvetica Neue")
+
+[sub_resource type="SystemFont" id="SystemFont_msdf"]
+font_names = PackedStringArray("Helvetica Neue")
+multichannel_signed_distance_field = true
+msdf_pixel_range = 8
+msdf_size = 48
+
+[node name="FontAtlasModes" type="Node3D"]
+
+[node name="DefaultLA8" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 0.45, 0)
+modulate = Color(1, 0.55, 0.12, 1)
+text = "DEFAULT LA8"
+font = SubResource("SystemFont_la8")
+font_size = 96
+outline_size = 8
+pixel_size = 0.006
+billboard = 1
+
+[node name="DefaultCaption" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, -0.15, 0)
+text = "must use the simulator swizzle"
+font = SubResource("SystemFont_la8")
+font_size = 42
+pixel_size = 0.006
+billboard = 1
+
+[node name="MSDF" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 0.45, 0)
+modulate = Color(0.15, 0.75, 1, 1)
+text = "MSDF"
+font = SubResource("SystemFont_msdf")
+font_size = 96
+outline_size = 8
+pixel_size = 0.006
+billboard = 1
+
+[node name="MSDFCaption" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, -0.15, 0)
+text = "must remain unchanged"
+font = SubResource("SystemFont_msdf")
+font_size = 42
+pixel_size = 0.006
+billboard = 1
+
+[node name="ColorEmoji" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.75, 0)
+text = "🌈"
+font = ExtResource("1_color_emoji")
+font_size = 96
+pixel_size = 0.006
+billboard = 1
+
+[node name="ColorCaption" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.25, 0)
+text = "must remain RGBA"
+font = SubResource("SystemFont_la8")
+font_size = 42
+pixel_size = 0.006
+billboard = 1
+
+[node name="RealityVolumeCamera3D" type="RealityVolumeCamera3D" parent="."]
+size = 4.5
+
+[node name="PreviewCamera" type="Camera3D" parent="RealityVolumeCamera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
