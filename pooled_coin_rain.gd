@@ -9,15 +9,13 @@ const COIN_HALF_THICKNESS := 0.06
 const COIN_COLLISION_LAYER := 4
 const COUNT_STEP_SECONDS := 2.5
 const COUNT_STEPS := [48, 8, 32, 16, 40, 4, 24]
-const STREAM_SPACING_Y := 0.21875
+const SPAWN_INTERVAL := 0.1
 const HIDDEN_TRANSFORM := Transform3D(Basis.IDENTITY, Vector3(0, -100, 0))
-const SPAWN_LANES := [
-	Vector2(0.5, 0.0),
-	Vector2(0.25, 0.433),
-	Vector2(-0.25, 0.433),
-	Vector2(-0.5, 0.0),
-	Vector2(-0.25, -0.433),
-	Vector2(0.25, -0.433),
+const SPAWN_POINTS := [
+	Vector3(-0.9, SPAWN_Y, -0.9),
+	Vector3(0.9, SPAWN_Y, -0.9),
+	Vector3(-0.9, SPAWN_Y, 0.9),
+	Vector3(0.9, SPAWN_Y, 0.9),
 ]
 
 @onready var normal_visuals: MultiMeshInstance3D = $CoinVisuals
@@ -28,10 +26,14 @@ const SPAWN_LANES := [
 
 var coin_shape := RID()
 var coin_bodies: Array[RID] = []
+var coin_active: Array[bool] = []
 var rng := RandomNumberGenerator.new()
 var requested_visible_count := POOL_SIZE
 var count_step := 0
 var count_elapsed := 0.0
+var spawn_elapsed := 0.0
+var next_coin := 0
+var next_spawn_point := 0
 
 
 func _ready() -> void:
@@ -56,11 +58,17 @@ func _ready() -> void:
 		PhysicsServer3D.body_set_collision_mask(body, COIN_COLLISION_LAYER)
 		PhysicsServer3D.body_set_space(body, get_world_3d().space)
 		coin_bodies.append(body)
-		_place_body(index, SPAWN_Y - float(index) * STREAM_SPACING_Y)
+		coin_active.append(false)
+		_retire_body(index)
 	_update_count_display()
 
 
 func _physics_process(delta: float) -> void:
+	spawn_elapsed += delta
+	while spawn_elapsed >= SPAWN_INTERVAL:
+		spawn_elapsed -= SPAWN_INTERVAL
+		_emit_coin()
+
 	count_elapsed += delta
 	if count_elapsed >= COUNT_STEP_SECONDS:
 		count_elapsed -= COUNT_STEP_SECONDS
@@ -68,16 +76,15 @@ func _physics_process(delta: float) -> void:
 		_set_visible_count(COUNT_STEPS[count_step])
 
 	for index in range(POOL_SIZE):
+		if not coin_active[index]:
+			continue
 		var transform: Transform3D = PhysicsServer3D.body_get_state(
 			coin_bodies[index], PhysicsServer3D.BODY_STATE_TRANSFORM
 		)
 		var local_y := to_local(transform.origin).y
 		if local_y < RECYCLE_Y:
-			_place_body(index, SPAWN_Y + rng.randf_range(0.0, 0.4))
-			transform = PhysicsServer3D.body_get_state(
-				coin_bodies[index], PhysicsServer3D.BODY_STATE_TRANSFORM
-			)
-			local_y = to_local(transform.origin).y
+			_retire_body(index)
+			continue
 		_write_instance(index, transform, local_y)
 
 
@@ -92,8 +99,19 @@ func _update_count_display() -> void:
 	count_label.text = "You currently should only see %d coins" % requested_visible_count
 
 
-func _place_body(index: int, y: float) -> void:
-	var lane: Vector2 = SPAWN_LANES[index % SPAWN_LANES.size()]
+func _emit_coin() -> void:
+	for offset in range(POOL_SIZE):
+		var index := (next_coin + offset) % POOL_SIZE
+		if coin_active[index]:
+			continue
+		coin_active[index] = true
+		_place_body(index, SPAWN_POINTS[next_spawn_point])
+		next_coin = (index + 1) % POOL_SIZE
+		next_spawn_point = (next_spawn_point + 1) % SPAWN_POINTS.size()
+		return
+
+
+func _place_body(index: int, position: Vector3) -> void:
 	var local_transform := Transform3D(
 		Basis.from_euler(
 			Vector3(
@@ -102,7 +120,7 @@ func _place_body(index: int, y: float) -> void:
 				rng.randf_range(0.0, TAU)
 			)
 		),
-		Vector3(lane.x, y, lane.y)
+		position
 	)
 	var body := coin_bodies[index]
 	PhysicsServer3D.body_set_state(
@@ -121,6 +139,23 @@ func _place_body(index: int, y: float) -> void:
 		)
 	)
 	PhysicsServer3D.body_set_state(body, PhysicsServer3D.BODY_STATE_SLEEPING, false)
+
+
+func _retire_body(index: int) -> void:
+	coin_active[index] = false
+	var body := coin_bodies[index]
+	PhysicsServer3D.body_set_state(
+		body, PhysicsServer3D.BODY_STATE_TRANSFORM, global_transform * HIDDEN_TRANSFORM
+	)
+	PhysicsServer3D.body_set_state(
+		body, PhysicsServer3D.BODY_STATE_LINEAR_VELOCITY, Vector3.ZERO
+	)
+	PhysicsServer3D.body_set_state(
+		body, PhysicsServer3D.BODY_STATE_ANGULAR_VELOCITY, Vector3.ZERO
+	)
+	PhysicsServer3D.body_set_state(body, PhysicsServer3D.BODY_STATE_SLEEPING, true)
+	normal_multimesh.set_instance_transform(index, HIDDEN_TRANSFORM)
+	portal_multimesh.set_instance_transform(index, HIDDEN_TRANSFORM)
 
 
 func _write_instance(index: int, world_transform: Transform3D, local_y: float) -> void:
