@@ -41,3 +41,6 @@ The blue labels use an MSDF system font and must remain on the existing MSDF
 path. The rainbow uses the bundled Noto Color Emoji font and must remain RGBA.
 Run this scene directly when validating Label3D atlas changes. The font is from
 Google's Noto Emoji project and its OFL 1.1 license is stored beside it.
+
+The main scene does not load Noto Color Emoji at startup. Use its red
+`ADD NOTO EMOJI` button to load and add the rainbow label on demand.

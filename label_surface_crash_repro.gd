@@ -30,8 +30,23 @@ func _on_crash_button_input(
 	):
 		return
 	triggered = true
+	_add_capture_preview()
 	warning_label.text = "TRIGGERED — UNPATCHED GDRK SHOULD CRASH"
 	call_deferred("_run_reproduction")
+
+
+func _add_capture_preview() -> void:
+	if $CrashButton.has_node("CapturePreview"):
+		return
+	var preview := Sprite3D.new()
+	preview.name = "CapturePreview"
+	preview.transform = Transform3D(
+		Basis(Vector3.RIGHT, PI / 2.0),
+		Vector3(0, 0.26, 0)
+	)
+	preview.pixel_size = 0.0012
+	preview.texture = crash_viewport.get_texture()
+	$CrashButton.add_child(preview)
 
 
 func _run_reproduction() -> void:
